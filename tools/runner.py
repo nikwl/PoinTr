@@ -87,9 +87,10 @@ def run_net(args, config, train_writer=None, val_writer=None):
                     partial = misc.random_dropping(partial, epoch) # specially for KITTI finetune
 
             elif dataset_name == 'ShapeNet':
-                gt = data.cuda()
-                partial, _ = misc.seprate_point_cloud(gt, npoints, [int(npoints * 1/4) , int(npoints * 3/4)], fixed_points = None)
-                partial = partial.cuda()
+                partial, gt = data[0].cuda(), data[1].cuda()
+                # gt = data.cuda()
+                # partial, _ = misc.seprate_point_cloud(gt, npoints, [int(npoints * 1/4) , int(npoints * 3/4)], fixed_points = None)
+                # partial = partial.cuda()
             else:
                 raise NotImplementedError(f'Train phase do not support {dataset_name}')
 
@@ -342,32 +343,29 @@ def test(base_model, test_dataloader, ChamferDisL1, ChamferDisL2, args, config, 
                 category_metrics[taxonomy_id].update(_metrics)
 
             elif dataset_name == 'ShapeNet':
-                gt = data.cuda()
-                choice = [torch.Tensor([1,1,1]),torch.Tensor([1,1,-1]),torch.Tensor([1,-1,1]),torch.Tensor([-1,1,1]),
-                            torch.Tensor([-1,-1,1]),torch.Tensor([-1,1,-1]), torch.Tensor([1,-1,-1]),torch.Tensor([-1,-1,-1])]
-                num_crop = int(npoints * crop_ratio[args.mode])
-                for item in choice:           
-                    partial, _ = misc.seprate_point_cloud(gt, npoints, num_crop, fixed_points = item)
-                    # NOTE: subsample the input
-                    partial = misc.fps(partial, 2048)
-                    ret = base_model(partial)
-                    coarse_points = ret[0]
-                    dense_points = ret[1]
+                partial = data[0].cuda()
+                gt = data[1].cuda()
+            
+                partial = misc.fps(partial, 2048)
 
-                    sparse_loss_l1 =  ChamferDisL1(coarse_points, gt)
-                    sparse_loss_l2 =  ChamferDisL2(coarse_points, gt)
-                    dense_loss_l1 =  ChamferDisL1(dense_points, gt)
-                    dense_loss_l2 =  ChamferDisL2(dense_points, gt)
+                ret = base_model(partial)
+                coarse_points = ret[0]
+                dense_points = ret[1]
 
-                    test_losses.update([sparse_loss_l1.item() * 1000, sparse_loss_l2.item() * 1000, dense_loss_l1.item() * 1000, dense_loss_l2.item() * 1000])
+                sparse_loss_l1 =  ChamferDisL1(coarse_points, gt)
+                sparse_loss_l2 =  ChamferDisL2(coarse_points, gt)
+                dense_loss_l1 =  ChamferDisL1(dense_points, gt)
+                dense_loss_l2 =  ChamferDisL2(dense_points, gt)
 
-                    _metrics = Metrics.get(dense_points ,gt)
+                test_losses.update([sparse_loss_l1.item() * 1000, sparse_loss_l2.item() * 1000, dense_loss_l1.item() * 1000, dense_loss_l2.item() * 1000])
 
-                    # test_metrics.update(_metrics)
+                _metrics = Metrics.get(dense_points ,gt)
 
-                    if taxonomy_id not in category_metrics:
-                        category_metrics[taxonomy_id] = AverageMeter(Metrics.names())
-                    category_metrics[taxonomy_id].update(_metrics)
+                test_metrics.update(_metrics)
+
+                if taxonomy_id not in category_metrics:
+                    category_metrics[taxonomy_id] = AverageMeter(Metrics.names())
+                category_metrics[taxonomy_id].update(_metrics)
             elif dataset_name == 'KITTI':
                 partial = data.cuda()
                 ret = base_model(partial)

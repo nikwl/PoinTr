@@ -17,14 +17,14 @@ def dataset_builder(args, config):
         sampler = torch.utils.data.distributed.DistributedSampler(dataset, shuffle = shuffle)
         dataloader = torch.utils.data.DataLoader(dataset, batch_size = config.others.bs if shuffle else 1,
                                             num_workers = int(args.num_workers),
-                                            drop_last = config.others.subset == 'train',
+                                            drop_last = False,
                                             worker_init_fn = worker_init_fn,
                                             sampler = sampler)
     else:
         sampler = None
         dataloader = torch.utils.data.DataLoader(dataset, batch_size=config.others.bs if shuffle else 1,
                                                 shuffle = shuffle, 
-                                                drop_last = config.others.subset == 'train',
+                                                drop_last = False,
                                                 num_workers = int(args.num_workers),
                                                 worker_init_fn=worker_init_fn)
     return sampler, dataloader

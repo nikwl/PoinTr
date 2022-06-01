@@ -10,9 +10,17 @@ import logging
 class ShapeNet(data.Dataset):
     def __init__(self, config):
         self.data_root = config.DATA_PATH
-        self.pc_path = config.PC_PATH
+        # self.pc_path = config.PC_PATH
         self.subset = config.subset
         self.npoints = config.N_POINTS
+
+        if self.subset == "train":
+            suffix = "_train.npy"
+        else:
+            suffix = "_test.npy"
+
+        self.file_list = IO.get(self.data_root + suffix)
+        return
         self.data_list_file = os.path.join(self.data_root, f'{self.subset}.txt')
 
         print(f'[DATASET] Open file {self.data_list_file}')
@@ -39,13 +47,20 @@ class ShapeNet(data.Dataset):
         return pc
         
     def __getitem__(self, idx):
-        sample = self.file_list[idx]
+        # sample = self.file_list[idx]
 
-        data = IO.get(os.path.join(self.pc_path, sample['file_path'])).astype(np.float32)
-        data = self.pc_norm(data)
-        data = torch.from_numpy(data).float()
+        # data = IO.get(os.path.join(self.pc_path, sample['file_path'])).astype(np.float32)
+        data = self.file_list[idx].astype(np.float32)
+        partial, gt = data
 
-        return sample['taxonomy_id'], sample['model_id'], data
+        partial = self.pc_norm(partial)
+        gt = self.pc_norm(gt)
+
+        partial = torch.from_numpy(partial).float()
+        gt = torch.from_numpy(gt).float()
+
+        # return sample['taxonomy_id'], sample['model_id'], data
+        return "None", "None", (partial, gt)
 
     def __len__(self):
         return len(self.file_list)
