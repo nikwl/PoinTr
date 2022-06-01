@@ -53,6 +53,9 @@ class ShapeNet(data.Dataset):
         data = self.file_list[idx].astype(np.float32)
         partial, gt = data
 
+        random_indices = np.random.choice(partial.shape[0], size=self.npoints, replace=False)
+        partial = partial[random_indices, :]
+
         partial = self.pc_norm(partial)
         gt = self.pc_norm(gt)
 

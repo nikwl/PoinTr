@@ -346,7 +346,7 @@ def test(base_model, test_dataloader, ChamferDisL1, ChamferDisL2, args, config, 
                 partial = data[0].cuda()
                 gt = data[1].cuda()
             
-                partial = misc.fps(partial, 2048)
+                # partial = misc.fps(partial, 2048)
 
                 ret = base_model(partial)
                 coarse_points = ret[0]
