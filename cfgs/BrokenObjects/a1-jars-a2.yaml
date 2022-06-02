@@ -36,4 +36,4 @@ max_epoch : 200
 
 consider_metric: CDL2
 
-EXPERIMENT_DIR: "/media/DATACENTER2/nikolas/dev/data/experiments/a1-jars-pointr-a1"
+EXPERIMENT_DIR: "/media/DATACENTER2/nikolas/dev/data/mendnet/2022SIGGRAPH/experiments/a1-jars-pointr-a2"

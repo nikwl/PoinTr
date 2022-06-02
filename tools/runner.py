@@ -12,6 +12,9 @@ from utils.AverageMeter import AverageMeter
 from utils.metrics import Metrics
 from extensions.chamfer_dist import ChamferDistanceL1, ChamferDistanceL2
 
+from .mesh import render
+from PIL import Image
+
 def run_net(args, config, train_writer=None, val_writer=None):
     logger = get_logger(args.log_name)
     # build dataset
@@ -517,16 +520,31 @@ def infer(base_model, test_dataloader, ChamferDisL1, ChamferDisL2, args, config,
                     dense_points.cpu().numpy()[0, ...]
                 )
 
-                trimesh.points.PointCloud(
-                    dense_ptclds[0]
-                ).export("temp.ply")
-                trimesh.points.PointCloud(
-                    coarse_ptclds[0]
-                ).export("temp2.ply")
-                trimesh.points.PointCloud(
-                    input_ptclds[0]
-                ).export("temp3.ply")
-                exit()
+                # p = trimesh.points.PointCloud(
+                #     dense_ptclds[0]
+                # )
+                # r1 = render(
+                #     p, resolution=(200, 200), bg_color=0,
+                # )
+                # p = trimesh.points.PointCloud(
+                #     coarse_ptclds[0]
+                # )
+                # r2 = render(
+                #     p, resolution=(200, 200), bg_color=0,
+                # )
+                # p = trimesh.points.PointCloud(
+                #     input_ptclds[0]
+                # )
+                # r3 = render(
+                #     p, resolution=(200, 200), bg_color=0,
+                # )
+
+                # r = np.hstack((r1, r2, r3))
+                # Image.fromarray(r).save("test.png")
+
+
+                
+                # exit()
 
                 # sparse_loss_l1 =  ChamferDisL1(coarse_points, gt)
                 # sparse_loss_l2 =  ChamferDisL2(coarse_points, gt)
