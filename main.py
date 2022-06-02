@@ -1,5 +1,4 @@
-from tools import run_net
-from tools import test_net
+from tools import run_net, test_net, infer_net
 from utils import parser, dist_utils, misc
 from utils.logger import *
 from utils.config import *
@@ -59,7 +58,8 @@ def main():
 
     # run
     if args.test:
-        test_net(args, config)
+        # test_net(args, config)
+        infer_net(args, config)
     else:
         run_net(args, config, train_writer, val_writer)
 

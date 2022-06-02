@@ -21,30 +21,33 @@ class ShapeNet(data.Dataset):
 
         self.file_list = IO.get(self.data_root + suffix)
         return
-        self.data_list_file = os.path.join(self.data_root, f'{self.subset}.txt')
+        # self.data_list_file = os.path.join(self.data_root, f'{self.subset}.txt')
 
-        print(f'[DATASET] Open file {self.data_list_file}')
-        with open(self.data_list_file, 'r') as f:
-            lines = f.readlines()
+        # print(f'[DATASET] Open file {self.data_list_file}')
+        # with open(self.data_list_file, 'r') as f:
+        #     lines = f.readlines()
         
-        self.file_list = []
-        for line in lines:
-            line = line.strip()
-            taxonomy_id = line.split('-')[0]
-            model_id = line.split('-')[1].split('.')[0]
-            self.file_list.append({
-                'taxonomy_id': taxonomy_id,
-                'model_id': model_id,
-                'file_path': line
-            })
-        print(f'[DATASET] {len(self.file_list)} instances were loaded')
-    def pc_norm(self, pc):
+        # self.file_list = []
+        # for line in lines:
+        #     line = line.strip()
+        #     taxonomy_id = line.split('-')[0]
+        #     model_id = line.split('-')[1].split('.')[0]
+        #     self.file_list.append({
+        #         'taxonomy_id': taxonomy_id,
+        #         'model_id': model_id,
+        #         'file_path': line
+        #     })
+        # print(f'[DATASET] {len(self.file_list)} instances were loaded')
+
+    def pc_norm(self, pc, pc2):
         """ pc: NxC, return NxC """
         centroid = np.mean(pc, axis=0)
         pc = pc - centroid
+        pc2 = pc2 - centroid
         m = np.max(np.sqrt(np.sum(pc**2, axis=1)))
         pc = pc / m
-        return pc
+        pc2 = pc2 / m
+        return pc, pc2
         
     def __getitem__(self, idx):
         # sample = self.file_list[idx]
@@ -56,8 +59,7 @@ class ShapeNet(data.Dataset):
         random_indices = np.random.choice(partial.shape[0], size=self.npoints, replace=False)
         partial = partial[random_indices, :]
 
-        partial = self.pc_norm(partial)
-        gt = self.pc_norm(gt)
+        gt, partial = self.pc_norm(gt, partial)
 
         partial = torch.from_numpy(partial).float()
         gt = torch.from_numpy(gt).float()
