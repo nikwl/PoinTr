@@ -12,8 +12,6 @@ from utils.AverageMeter import AverageMeter
 from utils.metrics import Metrics
 from extensions.chamfer_dist import ChamferDistanceL1, ChamferDistanceL2
 
-from .mesh import render
-from PIL import Image
 
 def run_net(args, config, train_writer=None, val_writer=None):
     logger = get_logger(args.log_name)
