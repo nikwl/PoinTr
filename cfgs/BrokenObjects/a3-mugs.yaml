@@ -21,11 +21,11 @@ bnmscheduler: {
 }}
 
 dataset : {
-  train : { _base_: cfgs/dataset_configs/BrokenObjects.yaml, 
+  train : { _base_: cfgs/BrokenObjects/a3-mugs-dataset.yaml, 
             others: {subset: 'train'}},
-  val : { _base_: cfgs/dataset_configs/BrokenObjects.yaml, 
+  val : { _base_: cfgs/BrokenObjects/a3-mugs-dataset.yaml, 
             others: {subset: 'test'}},
-  test : { _base_: cfgs/dataset_configs/BrokenObjects.yaml, 
+  test : { _base_: cfgs/BrokenObjects/a3-mugs-dataset.yaml, 
             others: {subset: 'test'}}
 }
 model : {
