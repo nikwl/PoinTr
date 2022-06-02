@@ -14,22 +14,33 @@ export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=python
 
 ./scripts/train.sh \
     1 \
-    --config cfgs/BrokenObjects/a2-bottles.yaml \
+    --config cfgs/BrokenObjects/a2-bottles-a2.yaml \
     --exp_name exp \
     --val_freq 1000
 ./scripts/test.sh \
     1 \
-    --config cfgs/BrokenObjects/a2-bottles.yaml \
+    --config cfgs/BrokenObjects/a2-bottles-a2.yaml \
     --exp_name exp \
-    --ckpts experiments/a2-bottles/BrokenObjects/exp/ckpt-epoch-200.pth
+    --ckpts experiments/a2-bottles-a2/BrokenObjects/exp/ckpt-epoch-200.pth
 
 ./scripts/train.sh \
     2 \
-    --config cfgs/BrokenObjects/a3-mugs.yaml \
+    --config cfgs/BrokenObjects/a3-mugs-a2.yaml \
     --exp_name exp \
     --val_freq 1000
 ./scripts/test.sh \
     2 \
-    --config cfgs/BrokenObjects/a3-mugs.yaml \
+    --config cfgs/BrokenObjects/a3-mugs-a2.yaml \
     --exp_name exp \
-    --ckpts experiments/a3-mugs/BrokenObjects/exp/ckpt-epoch-200.pth
+    --ckpts experiments/a3-mugs-a2/BrokenObjects/exp/ckpt-epoch-200.pth
+
+./scripts/train.sh \
+    1 \
+    --config cfgs/BrokenObjects/a5-airplanes-a2.yaml \
+    --exp_name exp \
+    --val_freq 1000
+./scripts/test.sh \
+    1 \
+    --config cfgs/BrokenObjects/a5-airplanes-a2.yaml \
+    --exp_name exp \
+    --ckpts experiments/a5-airplanes-a2/BrokenObjects/exp/ckpt-epoch-200.pth
