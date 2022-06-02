@@ -1,0 +1,3 @@
+NAME: ShapeNet
+DATA_PATH: /media/DATACENTER/nikolas/dev/data/cars.SGP_rebuttal_pointr
+N_POINTS: 2048
