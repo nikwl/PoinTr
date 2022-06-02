@@ -21,11 +21,11 @@ bnmscheduler: {
 }}
 
 dataset : {
-  train : { _base_: cfgs/BrokenObjects/a1-jars-dataset.yaml, 
+  train : { _base_: cfgs/BrokenObjects/a9-sofas-dataset.yaml, 
             others: {subset: 'train'}},
-  val : { _base_: cfgs/BrokenObjects/a1-jars-dataset.yaml, 
+  val : { _base_: cfgs/BrokenObjects/a9-sofas-dataset.yaml, 
             others: {subset: 'test'}},
-  test : { _base_: cfgs/BrokenObjects/a1-jars-dataset.yaml, 
+  test : { _base_: cfgs/BrokenObjects/a9-sofas-dataset.yaml, 
             others: {subset: 'test'}}
 }
 model : {
@@ -36,4 +36,4 @@ max_epoch : 800
 
 consider_metric: CDL2
 
-EXPERIMENT_DIR: "/media/DATACENTER2/nikolas/dev/data/mendnet/2022SIGGRAPH/experiments/a1-jars-pointr-a3"
+EXPERIMENT_DIR: "/media/DATACENTER2/nikolas/dev/data/mendnet/2022SIGGRAPH/experiments/a9-sofas-pointr-a3"
