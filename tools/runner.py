@@ -467,6 +467,11 @@ def infer(base_model, test_dataloader, ChamferDisL1, ChamferDisL2, args, config,
     dense_ptclds = []
     input_ptclds = []
 
+    def un_norm(pc, centroid, m):
+        pc = pc * m.numpy()
+        pc = pc + centroid.numpy()
+        return pc
+
     with torch.no_grad():
         for idx, (taxonomy_ids, model_ids, data) in enumerate(test_dataloader):
             taxonomy_id = taxonomy_ids[0] if isinstance(taxonomy_ids[0], str) else taxonomy_ids[0].item()
@@ -501,6 +506,7 @@ def infer(base_model, test_dataloader, ChamferDisL1, ChamferDisL2, args, config,
                 inp = data[0]
                 partial = data[0].cuda()
                 gt = data[1].cuda()
+                tf = data[2]
             
                 # partial = misc.fps(partial, 2048)
 
@@ -509,30 +515,31 @@ def infer(base_model, test_dataloader, ChamferDisL1, ChamferDisL2, args, config,
                 dense_points = ret[1]
 
                 input_ptclds.append(
-                    inp.cpu().numpy()[0, ...]
+                    un_norm(inp.cpu().numpy()[0, ...], *tf)
                 )
                 coarse_ptclds.append(
-                    coarse_points.cpu().numpy()[0, ...]
+                    un_norm(coarse_points.cpu().numpy()[0, ...], *tf)
                 )
                 dense_ptclds.append(
-                    dense_points.cpu().numpy()[0, ...]
+                    un_norm(dense_points.cpu().numpy()[0, ...], *tf)
                 )
 
                 # p = trimesh.points.PointCloud(
                 #     dense_ptclds[0]
-                # )
+                # ).export("temp1.ply")
                 # r1 = render(
                 #     p, resolution=(200, 200), bg_color=0,
                 # )
                 # p = trimesh.points.PointCloud(
                 #     coarse_ptclds[0]
-                # )
+                # ).export("temp2.ply")
                 # r2 = render(
                 #     p, resolution=(200, 200), bg_color=0,
                 # )
                 # p = trimesh.points.PointCloud(
                 #     input_ptclds[0]
-                # )
+                # ).export("temp3.ply")
+                # exit()
                 # r3 = render(
                 #     p, resolution=(200, 200), bg_color=0,
                 # )

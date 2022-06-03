@@ -47,8 +47,13 @@ class ShapeNet(data.Dataset):
         m = np.max(np.sqrt(np.sum(pc**2, axis=1)))
         pc = pc / m
         pc2 = pc2 / m
-        return pc, pc2
-        
+        return pc, pc2, (centroid, m)
+
+    def un_norm(self, pc, centroid, m):
+        pc = pc * m
+        pc = pc + centroid
+        return pc
+
     def __getitem__(self, idx):
         # sample = self.file_list[idx]
 
@@ -59,13 +64,14 @@ class ShapeNet(data.Dataset):
         random_indices = np.random.choice(partial.shape[0], size=self.npoints, replace=False)
         partial = partial[random_indices, :]
 
-        gt, partial = self.pc_norm(gt, partial)
+        gt, partial, tf = self.pc_norm(gt, partial)
+        # g = self.un_norm(gt, *tf)
 
         partial = torch.from_numpy(partial).float()
         gt = torch.from_numpy(gt).float()
 
         # return sample['taxonomy_id'], sample['model_id'], data
-        return "None", "None", (partial, gt)
+        return "None", "None", (partial, gt, tf)
 
     def __len__(self):
         return len(self.file_list)
